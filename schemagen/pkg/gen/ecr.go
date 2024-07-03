@@ -268,6 +268,15 @@ func dockerBuildProperties(dockerSpec schema.PackageSpec) map[string]schema.Prop
 				},
 			},
 		},
+		"cacheTo": {
+			Description: "Export build cache to registries",
+			TypeSpec: schema.TypeSpec{
+				Type: "array",
+				Items: &schema.TypeSpec{
+					Type: "string",
+				},
+			},
+		},
 		"context": {
 			Description: "Path to a directory to use for the Docker build context, usually the directory in which the Dockerfile resides (although dockerfile may be used to choose a custom location independent of this choice). If not specified, the context defaults to the current working directory; if a relative path is used, it is relative to the current working directory that Pulumi is evaluating.",
 			TypeSpec: schema.TypeSpec{

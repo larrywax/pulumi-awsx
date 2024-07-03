@@ -19,6 +19,7 @@ class ImageArgs:
                  args: Optional[pulumi.Input[Mapping[str, pulumi.Input[str]]]] = None,
                  builder_version: Optional['BuilderVersion'] = None,
                  cache_from: Optional[pulumi.Input[Sequence[pulumi.Input[str]]]] = None,
+                 cache_to: Optional[pulumi.Input[Sequence[pulumi.Input[str]]]] = None,
                  context: Optional[pulumi.Input[str]] = None,
                  dockerfile: Optional[pulumi.Input[str]] = None,
                  image_name: Optional[pulumi.Input[str]] = None,
@@ -32,6 +33,7 @@ class ImageArgs:
         :param pulumi.Input[Mapping[str, pulumi.Input[str]]] args: An optional map of named build-time argument variables to set during the Docker build.  This flag allows you to pass built-time variables that can be accessed like environment variables inside the `RUN` instruction.
         :param 'BuilderVersion' builder_version: The version of the Docker builder.
         :param pulumi.Input[Sequence[pulumi.Input[str]]] cache_from: Images to consider as cache sources
+        :param pulumi.Input[Sequence[pulumi.Input[str]]] cache_to: Export build cache to registries
         :param pulumi.Input[str] context: Path to a directory to use for the Docker build context, usually the directory in which the Dockerfile resides (although dockerfile may be used to choose a custom location independent of this choice). If not specified, the context defaults to the current working directory; if a relative path is used, it is relative to the current working directory that Pulumi is evaluating.
         :param pulumi.Input[str] dockerfile: dockerfile may be used to override the default Dockerfile name and/or location.  By default, it is assumed to be a file named Dockerfile in the root of the build context.
         :param pulumi.Input[str] image_name: Custom name for the underlying Docker image resource. If omitted, the image tag assigned by the provider will be used
@@ -47,6 +49,8 @@ class ImageArgs:
             pulumi.set(__self__, "builder_version", builder_version)
         if cache_from is not None:
             pulumi.set(__self__, "cache_from", cache_from)
+        if cache_to is not None:
+            pulumi.set(__self__, "cache_to", cache_to)
         if context is not None:
             pulumi.set(__self__, "context", context)
         if dockerfile is not None:
@@ -109,6 +113,18 @@ class ImageArgs:
     @cache_from.setter
     def cache_from(self, value: Optional[pulumi.Input[Sequence[pulumi.Input[str]]]]):
         pulumi.set(self, "cache_from", value)
+
+    @property
+    @pulumi.getter(name="cacheTo")
+    def cache_to(self) -> Optional[pulumi.Input[Sequence[pulumi.Input[str]]]]:
+        """
+        Export build cache to registries
+        """
+        return pulumi.get(self, "cache_to")
+
+    @cache_to.setter
+    def cache_to(self, value: Optional[pulumi.Input[Sequence[pulumi.Input[str]]]]):
+        pulumi.set(self, "cache_to", value)
 
     @property
     @pulumi.getter
@@ -203,6 +219,7 @@ class Image(pulumi.ComponentResource):
                  args: Optional[pulumi.Input[Mapping[str, pulumi.Input[str]]]] = None,
                  builder_version: Optional['BuilderVersion'] = None,
                  cache_from: Optional[pulumi.Input[Sequence[pulumi.Input[str]]]] = None,
+                 cache_to: Optional[pulumi.Input[Sequence[pulumi.Input[str]]]] = None,
                  context: Optional[pulumi.Input[str]] = None,
                  dockerfile: Optional[pulumi.Input[str]] = None,
                  image_name: Optional[pulumi.Input[str]] = None,
@@ -220,6 +237,7 @@ class Image(pulumi.ComponentResource):
         :param pulumi.Input[Mapping[str, pulumi.Input[str]]] args: An optional map of named build-time argument variables to set during the Docker build.  This flag allows you to pass built-time variables that can be accessed like environment variables inside the `RUN` instruction.
         :param 'BuilderVersion' builder_version: The version of the Docker builder.
         :param pulumi.Input[Sequence[pulumi.Input[str]]] cache_from: Images to consider as cache sources
+        :param pulumi.Input[Sequence[pulumi.Input[str]]] cache_to: Export build cache to registries
         :param pulumi.Input[str] context: Path to a directory to use for the Docker build context, usually the directory in which the Dockerfile resides (although dockerfile may be used to choose a custom location independent of this choice). If not specified, the context defaults to the current working directory; if a relative path is used, it is relative to the current working directory that Pulumi is evaluating.
         :param pulumi.Input[str] dockerfile: dockerfile may be used to override the default Dockerfile name and/or location.  By default, it is assumed to be a file named Dockerfile in the root of the build context.
         :param pulumi.Input[str] image_name: Custom name for the underlying Docker image resource. If omitted, the image tag assigned by the provider will be used
@@ -256,6 +274,7 @@ class Image(pulumi.ComponentResource):
                  args: Optional[pulumi.Input[Mapping[str, pulumi.Input[str]]]] = None,
                  builder_version: Optional['BuilderVersion'] = None,
                  cache_from: Optional[pulumi.Input[Sequence[pulumi.Input[str]]]] = None,
+                 cache_to: Optional[pulumi.Input[Sequence[pulumi.Input[str]]]] = None,
                  context: Optional[pulumi.Input[str]] = None,
                  dockerfile: Optional[pulumi.Input[str]] = None,
                  image_name: Optional[pulumi.Input[str]] = None,
@@ -278,6 +297,7 @@ class Image(pulumi.ComponentResource):
             __props__.__dict__["args"] = args
             __props__.__dict__["builder_version"] = builder_version
             __props__.__dict__["cache_from"] = cache_from
+            __props__.__dict__["cache_to"] = cache_to
             __props__.__dict__["context"] = context
             __props__.__dict__["dockerfile"] = dockerfile
             __props__.__dict__["image_name"] = image_name

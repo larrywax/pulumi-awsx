@@ -19,7 +19,7 @@
             "packageReferences": {
                 "Pulumi": "3.*",
                 "Pulumi.Aws": "6.*",
-                "Pulumi.Docker": "4.*"
+                "Pulumi.DockerBuild": "0.*"
             },
             "respectSchemaVersion": true
         },
@@ -27,7 +27,7 @@
             "generateResourceContainerTypes": true,
             "importBasePath": "github.com/pulumi/pulumi-awsx/sdk/v2/go/awsx",
             "internalDependencies": [
-                "github.com/pulumi/pulumi-docker/sdk/v4/go/docker"
+                "github.com/pulumi/pulumi-docker-build/sdk/go/dockerbuild"
             ],
             "liftSingleValueMethodReturns": true,
             "respectSchemaVersion": true
@@ -35,14 +35,14 @@
         "java": {
             "dependencies": {
                 "com.pulumi:aws": "6.37.1",
-                "com.pulumi:docker": "4.5.1"
+                "com.pulumi:docker-build": "0.0.3"
             }
         },
         "nodejs": {
             "dependencies": {
                 "@aws-sdk/client-ecs": "^3.405.0",
                 "@pulumi/aws": "^6.37.1",
-                "@pulumi/docker": "^4.5.1",
+                "@pulumi/docker-build": "^0.0.3",
                 "@pulumi/pulumi": "^3.0.0",
                 "@types/aws-lambda": "^8.10.23",
                 "aws-sdk": "^2.1450.0",
@@ -65,7 +65,7 @@
             "requires": {
                 "pulumi": "\u003e=3.91.1,\u003c4.0.0",
                 "pulumi-aws": "\u003e=6.0.4,\u003c7.0.0",
-                "pulumi-docker": "\u003e=4.5.1,\u003c5.0.0"
+                "pulumi-docker": "\u003e=0.0.3,\u003c1.0.0"
             },
             "respectSchemaVersion": true,
             "usesIOClasses": true
@@ -802,6 +802,13 @@
                         "type": "string"
                     },
                     "description": "Images to consider as cache sources"
+                },
+                "cacheTo": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Export build cache to registries"
                 },
                 "context": {
                     "type": "string",
@@ -2174,6 +2181,13 @@
                         "type": "string"
                     },
                     "description": "Images to consider as cache sources"
+                },
+                "cacheTo": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Export build cache to registries"
                 },
                 "context": {
                     "type": "string",

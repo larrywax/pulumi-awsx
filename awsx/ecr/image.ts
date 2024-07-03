@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import * as aws from "@pulumi/aws";
-import * as docker from "@pulumi/docker";
+import * as docker from "@pulumi/docker-build";
 import * as pulumi from "@pulumi/pulumi";
 import * as schema from "../schema-types";
 import * as utils from "../utils";
@@ -62,37 +62,45 @@ export function computeImageFromAsset(
       throw new Error("Invalid credentials");
     }
     return {
-      registry: ecrCredentials.proxyEndpoint,
+      address: ecrCredentials.proxyEndpoint,
       username: username,
       password: password,
     };
   });
 
   const dockerImageArgs: docker.ImageArgs = {
-    imageName: canonicalImageName,
-    build: {
-      args: dockerInputs.args,
-      builderVersion: dockerInputs.builderVersion,
-      cacheFrom: dockerInputs.cacheFrom
-        ? {
-            images: dockerInputs.cacheFrom,
-          }
-        : undefined,
-      context: dockerInputs.context,
-      dockerfile: dockerInputs.dockerfile,
-      platform: dockerInputs.platform,
-      target: dockerInputs.target,
-    },
-    registry: registryCredentials,
+    tags: [canonicalImageName],
+    buildArgs: dockerInputs.args,
+    cacheFrom: dockerInputs.cacheFrom
+      ? dockerInputs.cacheFrom.map((r) => {
+          return { registry: { ref: r } };
+        })
+      : undefined,
+    cacheTo: args.cacheTo
+      ? args.cacheTo.map((r) => {
+          return {
+            registry: {
+              ref: r,
+            },
+          };
+        })
+      : [{ inline: {} }],
+    context: dockerInputs.context ? { location: dockerInputs.context } : undefined,
+    dockerfile: { location: dockerInputs.dockerfile },
+    platforms: dockerInputs.platform ? [dockerInputs.platform as docker.Platform] : [],
+    target: dockerInputs.target,
+    push: true,
+    buildOnPreview: false,
+    registries: [registryCredentials],
   };
 
   const image = new docker.Image(imageName, dockerImageArgs, { parent });
 
-  image.repoDigest.apply((d: any) =>
-    pulumi.log.debug(`    build complete: ${imageName} (${d})`, parent),
+  image.ref.apply((ref: any) =>
+    pulumi.log.debug(`    build complete: ${imageName} (${ref})`, parent),
   );
 
-  return image.repoDigest;
+  return image.ref;
 }
 
 function createUniqueImageName(inputs: pulumi.Unwrap<schema.DockerBuildInputs>): string {
